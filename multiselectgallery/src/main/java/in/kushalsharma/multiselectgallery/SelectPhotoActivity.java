@@ -2,11 +2,11 @@ package in.kushalsharma.multiselectgallery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,11 +27,21 @@ public class SelectPhotoActivity extends AppCompatActivity {
     private SelectPhotoAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
+    private int count;
+    private ActionBar ab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo);
+
+        ab = getSupportActionBar();
+
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
 
         bucketId = getIntent().getStringExtra("bucket_id");
         selectedPhotoList = getIntent().getParcelableArrayListExtra("selected_photo_list");
@@ -45,11 +55,13 @@ public class SelectPhotoActivity extends AppCompatActivity {
             for (MediaStorePhoto photo : selectedPhotoList) {
                 if (photo.getId().equals(bucketPhotoList.get(i).getId())) {
                     bucketPhotoList.get(i).setStatus("checked");
+                    count++;
                     break;
                 }
             }
         }
 
+        ab.setTitle(count + " Photos Selected");
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new SelectPhotoAdapter(bucketPhotoList, this);
@@ -58,9 +70,10 @@ public class SelectPhotoActivity extends AppCompatActivity {
         mAdapter.setCallback(new SelectPhotoAdapter.SelectPhotoCallback() {
             @Override
             public void selectViewPressed(int position, String status) {
-
                 bucketPhotoList.get(position).setStatus(status);
-                Log.e("Status", bucketPhotoList.get(position).getStatus());
+                if (status.equals("checked")) count++;
+                else count--;
+                ab.setTitle(count + " Photos Selected");
             }
         });
 
@@ -82,6 +95,10 @@ public class SelectPhotoActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {

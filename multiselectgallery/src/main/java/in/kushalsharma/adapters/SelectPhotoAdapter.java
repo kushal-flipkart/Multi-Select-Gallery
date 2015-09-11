@@ -77,8 +77,6 @@ public class SelectPhotoAdapter extends RecyclerView.Adapter {
                     selectPhotoCallback.selectViewPressed(position, bucketPhotoList.get(position).getStatus());
                 }
                 ((PhotoViewHolder) holder).getSelectView().setChecked(bucketPhotoList.get(position).getStatus().equals("checked"));
-
-                Log.e("Status", bucketPhotoList.get(position).getStatus());
             }
         });
 
