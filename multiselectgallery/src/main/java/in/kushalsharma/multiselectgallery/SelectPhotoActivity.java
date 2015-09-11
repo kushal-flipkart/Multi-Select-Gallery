@@ -11,37 +11,43 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import in.kushalsharma.adapters.PhotoAlbumAdapter;
+import in.kushalsharma.adapters.SelectPhotoAdapter;
 import in.kushalsharma.utils.MediaStoreHelperMethods;
 import in.kushalsharma.utils.MediaStorePhoto;
 
-public class PhotoAlbumActivity extends AppCompatActivity {
+public class SelectPhotoActivity extends AppCompatActivity {
+
+    private String bucketId;
+    private ArrayList<MediaStorePhoto> bucketPhotoList;
+
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
-    private ArrayList<MediaStorePhoto> bucketItemList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_album);
+        setContentView(R.layout.activity_select_photo);
+
+        bucketId = getIntent().getStringExtra("bucket_id");
+        bucketPhotoList = MediaStoreHelperMethods.getAllPhotosInBucket(bucketId, getContentResolver());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new PhotoAlbumAdapter(bucketItemList, this);
+        mAdapter = new SelectPhotoAdapter(bucketPhotoList, this);
         mLayoutManager = new GridLayoutManager(this, 2);
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        getPhotoAlbumData();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_photo_album, menu);
+        getMenuInflater().inflate(R.menu.menu_select_photo, menu);
         return true;
     }
 
@@ -58,13 +64,5 @@ public class PhotoAlbumActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void getPhotoAlbumData() {
-        bucketItemList.clear();
-        for (MediaStorePhoto bucketPhoto : MediaStoreHelperMethods.getBucketCoverItems(getContentResolver())) {
-            bucketItemList.add(bucketPhoto);
-        }
-        mAdapter.notifyDataSetChanged();
     }
 }
