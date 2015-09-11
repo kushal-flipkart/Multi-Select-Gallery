@@ -1,10 +1,12 @@
 package in.kushalsharma.multiselectgallery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,6 +17,8 @@ import in.kushalsharma.utils.MediaStoreHelperMethods;
 import in.kushalsharma.utils.MediaStorePhoto;
 
 public class PhotoAlbumActivity extends AppCompatActivity {
+
+    private ArrayList<MediaStorePhoto> selectedPhotoList = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -29,7 +33,7 @@ public class PhotoAlbumActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new PhotoAlbumAdapter(bucketItemList, this);
+        mAdapter = new PhotoAlbumAdapter(bucketItemList, selectedPhotoList, this);
         mLayoutManager = new GridLayoutManager(this, 2);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -66,5 +70,18 @@ public class PhotoAlbumActivity extends AppCompatActivity {
             bucketItemList.add(bucketPhoto);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            selectedPhotoList.clear();
+            ArrayList<MediaStorePhoto> photoList = data.getParcelableArrayListExtra("selected_photo_list");
+            for (MediaStorePhoto mPhoto : photoList) {
+                selectedPhotoList.add(mPhoto);
+                Log.e("Selected photo list ", mPhoto.getDataUri());
+            }
+        }
     }
 }

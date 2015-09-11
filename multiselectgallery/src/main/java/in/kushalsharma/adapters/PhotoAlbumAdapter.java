@@ -26,10 +26,12 @@ import in.kushalsharma.utils.MediaStorePhoto;
 public class PhotoAlbumAdapter extends RecyclerView.Adapter {
 
     private ArrayList<MediaStorePhoto> bucketItemList;
+    private ArrayList<MediaStorePhoto> selectedPhotoList;
     private Activity mAct;
 
-    public PhotoAlbumAdapter(ArrayList<MediaStorePhoto> bucketItemList, Activity mActivity) {
+    public PhotoAlbumAdapter(ArrayList<MediaStorePhoto> bucketItemList, ArrayList<MediaStorePhoto> selectedPhotoList, Activity mActivity) {
         this.bucketItemList = bucketItemList;
+        this.selectedPhotoList = selectedPhotoList;
         this.mAct = mActivity;
     }
 
@@ -72,7 +74,8 @@ public class PhotoAlbumAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 Intent mIntent = new Intent(mAct, SelectPhotoActivity.class);
                 mIntent.putExtra("bucket_id", bucketItemList.get(position).getBucketId());
-                mAct.startActivity(mIntent);
+                mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                mAct.startActivityForResult(mIntent, 1000);
             }
         });
 
@@ -81,7 +84,8 @@ public class PhotoAlbumAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 Intent mIntent = new Intent(mAct, SelectPhotoActivity.class);
                 mIntent.putExtra("bucket_id", bucketItemList.get(position).getBucketId());
-                mAct.startActivity(mIntent);
+                mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                mAct.startActivityForResult(mIntent, 1000);
             }
         });
     }
