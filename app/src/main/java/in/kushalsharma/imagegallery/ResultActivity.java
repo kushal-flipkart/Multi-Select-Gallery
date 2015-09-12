@@ -1,38 +1,34 @@
 package in.kushalsharma.imagegallery;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import in.kushalsharma.multiselectgallery.PhotoAlbumActivity;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import in.kushalsharma.utils.MediaStorePhoto;
+
+public class ResultActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_result);
 
-        Button selectPicturesButton = (Button) findViewById(R.id.select_pictures_button);
+        ArrayList<MediaStorePhoto> list = getIntent().getParcelableArrayListExtra("selected_photo_list");
 
-        selectPicturesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mIntent = new Intent(MainActivity.this, PhotoAlbumActivity.class);
-                mIntent.putExtra("following_class", "in.kushalsharma.imagegallery.ResultActivity");
-                startActivity(mIntent);
-            }
-        });
+        for (MediaStorePhoto photo : list) {
+            Log.e(photo.getBucket(), photo.getDataUri());
+        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_result, menu);
         return true;
     }
 

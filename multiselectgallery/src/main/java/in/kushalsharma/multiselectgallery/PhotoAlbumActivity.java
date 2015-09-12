@@ -72,6 +72,16 @@ public class PhotoAlbumActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {
+
+            try {
+                Class resultClass = Class.forName(getIntent().getStringExtra("following_class"));
+                Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
+                mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                startActivity(mIntent);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
             return true;
         }
 
