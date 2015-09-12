@@ -99,7 +99,7 @@ public class PhotoAlbumActivity extends AppCompatActivity {
                     Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
                     mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
                     mIntent.putExtra("photo_type", photoType);
-                    startActivity(mIntent);
+                    startActivityForResult(mIntent, 3000);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -147,8 +147,13 @@ public class PhotoAlbumActivity extends AppCompatActivity {
                 selectedPhotoList.add(mPhoto);
             }
             ab.setTitle(String.valueOf(selectedPhotoList.size()) + " Photos Selected");
+            getPhotoAlbumData();
         }
-        getPhotoAlbumData();
+        if (requestCode == 3000 && resultCode == RESULT_OK) {
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     public ArrayList<Integer> getBucketTotalImageCount() {
