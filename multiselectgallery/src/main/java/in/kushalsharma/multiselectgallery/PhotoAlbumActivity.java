@@ -1,8 +1,10 @@
 package in.kushalsharma.multiselectgallery;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,10 +32,14 @@ public class PhotoAlbumActivity extends AppCompatActivity {
 
     private ActionBar ab;
 
+    private int photoType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_album);
+
+        photoType = getIntent().getIntExtra("photo_type", 0);
 
         ab = getSupportActionBar();
         if (ab != null) {
@@ -67,21 +73,45 @@ public class PhotoAlbumActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            finish();
+            if (selectedPhotoList.size() != 0) new AlertDialog.Builder(PhotoAlbumActivity.this)
+                    .setTitle("Cancel selection?")
+                    .setMessage("Your selection will be lost. Do you want to continue?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.drawable.ic_cancel_dark)
+                    .show();
+            else finish();
         }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_ok) {
-
-            try {
-                Class resultClass = Class.forName(getIntent().getStringExtra("following_class"));
-                Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
-                mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
-                startActivity(mIntent);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
+            if (selectedPhotoList.size() != 0)
+                try {
+                    Class resultClass = Class.forName(getIntent().getStringExtra("following_class"));
+                    Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
+                    mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                    mIntent.putExtra("photo_type", photoType);
+                    startActivity(mIntent);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            else new AlertDialog.Builder(PhotoAlbumActivity.this)
+                    .setTitle("Nothing selected")
+                    .setMessage("Your have not selected any pictures. Please select at least one picture to continue!")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .setIcon(R.drawable.ic_cancel_dark)
+                    .show();
             return true;
         }
 
