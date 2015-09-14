@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:layout_margin="2dp">
 
-    <ImageView
+    <in.kushalsharma.utils.SquareImageView
         android:id="@+id/bucket_image"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 

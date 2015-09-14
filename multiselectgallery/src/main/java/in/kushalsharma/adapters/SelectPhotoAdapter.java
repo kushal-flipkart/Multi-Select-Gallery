@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import in.kushalsharma.multiselectgallery.R;
 import in.kushalsharma.utils.MediaStorePhoto;
+import in.kushalsharma.utils.SquareImageView;
 
 /**
  * Created by Kush on 9/11/2015.
@@ -112,13 +113,13 @@ public class SelectPhotoAdapter extends RecyclerView.Adapter {
 
     public class PhotoViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imageView;
+        private SquareImageView imageView;
         private CheckBox selectView;
         private int id;
 
         public PhotoViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.bucket_image);
+            imageView = (SquareImageView) itemView.findViewById(R.id.bucket_image);
             selectView = (CheckBox) itemView.findViewById(R.id.select_check_box);
         }
 
