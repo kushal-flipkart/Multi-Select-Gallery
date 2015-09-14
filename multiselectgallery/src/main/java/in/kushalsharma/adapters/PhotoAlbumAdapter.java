@@ -3,7 +3,6 @@ package in.kushalsharma.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.graphics.Palette;
@@ -68,21 +67,25 @@ public class PhotoAlbumAdapter extends RecyclerView.Adapter {
                 if (((BucketItemViewHolder) holder).getId() == position) {
                     ((BucketItemViewHolder) holder).getImageView().setImageBitmap(bitmap);
 
-                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                    try {
+                        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
 
-                        @Override
-                        public void onGenerated(Palette palette) {
+                            @Override
+                            public void onGenerated(Palette palette) {
 
-                            int muted = palette.getMutedColor(0x000000);
-                            int mutedLight = palette.getLightMutedColor(0x000000);
-                            int mutedDark = palette.getDarkMutedColor(0x000000);
-                            int vibrant = palette.getVibrantColor(0x000000);
-                            int vibrantLight = palette.getLightVibrantColor(mutedLight);
-                            int vibrantDark = palette.getDarkVibrantColor(mutedDark);
-                            ((BucketItemViewHolder) holder).getNameView().setBackgroundColor(vibrantDark);
-                            ((BucketItemViewHolder) holder).getNameView().setTextColor(vibrantLight);
-                        }
-                    });
+                                int muted = palette.getMutedColor(0x000000);
+                                int mutedLight = palette.getLightMutedColor(0x000000);
+                                int mutedDark = palette.getDarkMutedColor(0x000000);
+                                int vibrant = palette.getVibrantColor(0x000000);
+                                int vibrantLight = palette.getLightVibrantColor(mutedLight);
+                                int vibrantDark = palette.getDarkVibrantColor(mutedDark);
+                                ((BucketItemViewHolder) holder).getNameView().setBackgroundColor(vibrantDark);
+                                ((BucketItemViewHolder) holder).getNameView().setTextColor(vibrantLight);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.execute();

@@ -65,7 +65,7 @@ public class SelectPhotoActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new SelectPhotoAdapter(bucketPhotoList, this);
-        mLayoutManager = new GridLayoutManager(this, 2);
+        mLayoutManager = new GridLayoutManager(this, 3);
 
         mAdapter.setCallback(new SelectPhotoAdapter.SelectPhotoCallback() {
             @Override

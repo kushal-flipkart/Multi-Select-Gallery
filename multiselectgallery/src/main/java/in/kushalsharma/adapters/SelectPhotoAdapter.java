@@ -54,7 +54,7 @@ public class SelectPhotoAdapter extends RecyclerView.Adapter {
                 return MediaStore.Images.Thumbnails.getThumbnail(
                         mAct.getContentResolver(),
                         Long.parseLong(bucketPhotoList.get(position).getId()),
-                        MediaStore.Images.Thumbnails.MINI_KIND,
+                        MediaStore.Images.Thumbnails.MICRO_KIND,
                         null);
             }
 
