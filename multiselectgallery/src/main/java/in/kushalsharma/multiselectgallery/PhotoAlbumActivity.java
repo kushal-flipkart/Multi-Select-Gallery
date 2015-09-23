@@ -3,14 +3,15 @@ package in.kushalsharma.multiselectgallery;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,8 @@ public class PhotoAlbumActivity extends AppCompatActivity {
     private ArrayList<Integer> bucketTotalImageCount = new ArrayList<>();
     private ArrayList<Integer> bucketSelectedImageCount = new ArrayList<>();
 
+    private FloatingActionButton fab;
+
     private ActionBar ab;
 
     private int photoType;
@@ -47,6 +50,7 @@ public class PhotoAlbumActivity extends AppCompatActivity {
             ab.setHomeButtonEnabled(true);
         }
 
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new PhotoAlbumAdapter(bucketItemList, selectedPhotoList, this);
@@ -55,14 +59,33 @@ public class PhotoAlbumActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        getPhotoAlbumData();
-    }
+        fab.setImageResource(R.drawable.ic_next);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedPhotoList.size() != 0)
+                    try {
+                        Class resultClass = Class.forName(getIntent().getStringExtra("following_class"));
+                        Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
+                        mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                        mIntent.putExtra("photo_type", photoType);
+                        startActivityForResult(mIntent, 3000);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                else new AlertDialog.Builder(PhotoAlbumActivity.this)
+                        .setTitle("Nothing selected")
+                        .setMessage("Your have not selected any pictures. Please select at least one picture to continue!")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setIcon(R.drawable.ic_cancel_dark)
+                        .show();
+            }
+        });
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_photo_album, menu);
-        return true;
+        getPhotoAlbumData();
     }
 
     @Override
@@ -89,30 +112,6 @@ public class PhotoAlbumActivity extends AppCompatActivity {
                     .setIcon(R.drawable.ic_cancel_dark)
                     .show();
             else finish();
-        }
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_ok) {
-            if (selectedPhotoList.size() != 0)
-                try {
-                    Class resultClass = Class.forName(getIntent().getStringExtra("following_class"));
-                    Intent mIntent = new Intent(PhotoAlbumActivity.this, resultClass);
-                    mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
-                    mIntent.putExtra("photo_type", photoType);
-                    startActivityForResult(mIntent, 3000);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            else new AlertDialog.Builder(PhotoAlbumActivity.this)
-                    .setTitle("Nothing selected")
-                    .setMessage("Your have not selected any pictures. Please select at least one picture to continue!")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    })
-                    .setIcon(R.drawable.ic_cancel_dark)
-                    .show();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

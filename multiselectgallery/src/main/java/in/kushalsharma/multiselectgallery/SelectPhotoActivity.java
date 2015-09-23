@@ -2,13 +2,14 @@ package in.kushalsharma.multiselectgallery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class SelectPhotoActivity extends AppCompatActivity {
     private int count;
     private ActionBar ab;
 
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,32 @@ public class SelectPhotoActivity extends AppCompatActivity {
         }
 
         ab.setTitle(count + " Photos Selected");
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_next);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ArrayList<MediaStorePhoto> tempPhotoList = new ArrayList<>(selectedPhotoList);
+                selectedPhotoList.clear();
+                for (MediaStorePhoto photo : tempPhotoList) {
+                    if (!photo.getBucketId().equals(bucketId)) {
+                        selectedPhotoList.add(photo);
+                    }
+                }
+                for (MediaStorePhoto photo : bucketPhotoList) {
+                    if (photo.getStatus().equals("checked")) {
+                        selectedPhotoList.add(photo);
+                    }
+                }
+
+                Intent mIntent = new Intent();
+                mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
+                setResult(RESULT_OK, mIntent);
+                finish();
+            }
+        });
+
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new SelectPhotoAdapter(bucketPhotoList, this);
@@ -83,13 +111,6 @@ public class SelectPhotoActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_select_photo, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -98,30 +119,6 @@ public class SelectPhotoActivity extends AppCompatActivity {
 
         if (id == android.R.id.home) {
             finish();
-        }
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_ok) {
-
-            ArrayList<MediaStorePhoto> tempPhotoList = new ArrayList<>(selectedPhotoList);
-            selectedPhotoList.clear();
-            for (MediaStorePhoto photo : tempPhotoList) {
-                if (!photo.getBucketId().equals(bucketId)) {
-                    selectedPhotoList.add(photo);
-                }
-            }
-            for (MediaStorePhoto photo : bucketPhotoList) {
-                if (photo.getStatus().equals("checked")) {
-                    selectedPhotoList.add(photo);
-                }
-            }
-
-            Intent mIntent = new Intent();
-            mIntent.putParcelableArrayListExtra("selected_photo_list", selectedPhotoList);
-            setResult(RESULT_OK, mIntent);
-            finish();
-
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
